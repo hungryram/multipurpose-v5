@@ -146,26 +146,37 @@ Test the automation without waiting for the schedule:
 
 ### Local Testing
 
-Test the API endpoints locally:
+Test the API endpoints locally. **Note**: The first two endpoints only generate content (return JSON) but don't save to Sanity:
 
-```bash
-# Generate topics
-curl -X POST http://localhost:3000/api/ai/generate-topics \
-  -H "Content-Type: application/json" \
-  -d '{
-    "businessProfile": {"company_name": "Your Business"},
-    "count": 3
-  }'
+```powershell
+# 1. Test topic generation (returns JSON only)
+curl.exe -X POST http://localhost:3000/api/ai/generate-topics `
+  -H "Content-Type: application/json" `
+  -d '{\"businessProfile\": {\"company_name\": \"Your Business\"}, \"count\": 3}'
 
-# Generate blog post
-curl -X POST http://localhost:3000/api/ai/generate-blog-post \
-  -H "Content-Type: application/json" \
-  -d '{
-    "topic": "10 Tips for Better Customer Service",
-    "style": "professional",
-    "wordCount": "medium"
-  }'
+# 2. Test blog post generation (returns JSON only)
+curl.exe -X POST http://localhost:3000/api/ai/generate-blog-post `
+  -H "Content-Type: application/json" `
+  -d '{\"topic\": \"10 Tips for Better Customer Service\", \"style\": \"professional\", \"wordCount\": \"short\", \"generateImage\": false}'
+
+# 3. Test FULL automation (actually creates post in Sanity)
+# Replace YOUR_CRON_SECRET with the value from your .env.local
+curl.exe -X POST http://localhost:3000/api/cron/generate-blog `
+  -H "Authorization: Bearer YOUR_CRON_SECRET" `
+  -H "Content-Type: application/json"
 ```
+
+**The cron endpoint is what you need to test to see posts in Sanity!** It:
+- Generates a topic
+- Creates the full blog post
+- Uploads images (if enabled)
+- Saves to Sanity as draft or published
+- Sends notification email
+
+Make sure these are in your `.env.local` first:
+- `SANITY_API_TOKEN` - For write access to Sanity
+- `CRON_SECRET` - For authentication
+- `NEXT_PUBLIC_SITE_URL` - For API callbacks
 
 ## Features
 
