@@ -47,7 +47,19 @@ openssl rand -base64 32
 
 Copy the output to `CRON_SECRET` in your `.env.local`
 
-### 4. Configure GitHub Repository Secrets
+### 4. Commit and Push Workflow File
+
+The workflow file was created at `.github/workflows/generate-blog.yml`. You need to commit and push it to GitHub:
+
+```bash
+git add .github/workflows/generate-blog.yml
+git commit -m "Add AI blog post generation workflow"
+git push origin main
+```
+
+After pushing, the workflow will appear in your repository's Actions tab.
+
+### 5. Configure GitHub Repository Secrets
 
 Go to your GitHub repository → Settings → Secrets and variables → Actions
 
@@ -55,7 +67,7 @@ Add these secrets:
 - `CRON_SECRET` - Same value as your `.env.local`
 - `SITE_URL` - Your production URL (e.g., `https://yourdomain.com`)
 
-### 5. Configure in Sanity Studio
+### 6. Configure in Sanity Studio
 
 1. Open your Sanity Studio
 2. Go to **Profile** document
@@ -72,7 +84,7 @@ Add these secrets:
    - Add exclude topics (optional)
    - Set notification email
 
-### 6. Adjust Schedule (Optional)
+### 7. Adjust Schedule (Optional)
 
 Edit `.github/workflows/generate-blog.yml` to change timing:
 
@@ -117,11 +129,20 @@ Per client with 3x/week publishing: **~$2-3/month**
 
 Test the automation without waiting for the schedule:
 
-1. Go to your GitHub repository
-2. Click **Actions** tab
-3. Select **Generate AI Blog Posts** workflow
-4. Click **Run workflow**
-5. Check Sanity Studio for the generated post
+1. **Verify workflow is pushed**: Make sure you've committed and pushed `.github/workflows/generate-blog.yml` to GitHub
+2. Go to your GitHub repository
+3. Click **Actions** tab (you should now see "Generate AI Blog Posts" in the workflows list)
+4. Click on **Generate AI Blog Posts** workflow in the left sidebar
+5. Click **Run workflow** button (top right)
+6. Select branch (usually `main`) and click green **Run workflow** button
+7. Wait for the workflow to complete (watch the progress)
+8. Check Sanity Studio for the generated post
+
+**Note**: If you don't see the workflow in the Actions tab:
+- Ensure `.github/workflows/generate-blog.yml` exists in your repository
+- Check that you've pushed the file to GitHub (`git push`)
+- Refresh the Actions page
+- Make sure you're looking at the correct repository
 
 ### Local Testing
 
