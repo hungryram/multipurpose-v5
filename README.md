@@ -12,19 +12,26 @@ First, create a new Sanity project at [sanity.io/manage](https://www.sanity.io/m
 
 ### 2. Deploy the Website
 
-[![Deploy Website with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhungryram%2Fmultipurpose-v5&project-name=multipurpose-v5&repository-name=multipurpose-v5&root-directory=packages/web&env=NEXT_PUBLIC_SANITY_PROJECT_ID,NEXT_PUBLIC_SANITY_DATASET,SANITY_API_READ_TOKEN,NEXT_PUBLIC_SITE_URL&envDescription=Required%20environment%20variables%20for%20Sanity%20integration&envLink=https%3A%2F%2Fgithub.com%2Fhungryram%2Fmultipurpose-v5%23environment-variables)
+[![Deploy Website with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhungryram%2Fmultipurpose-v5&project-name=multipurpose-v5&repository-name=multipurpose-v5&root-directory=packages/web&env=NEXT_PUBLIC_SANITY_PROJECT_ID,NEXT_PUBLIC_SANITY_DATASET,SANITY_API_TOKEN,NEXT_PUBLIC_SITE_URL,OPENAI_API_KEY,CRON_SECRET,NEXT_PUBLIC_ENABLE_AI_FEATURES&envDescription=Required%20environment%20variables%20for%20Sanity%20integration%20and%20AI%20features&envLink=https%3A%2F%2Fgithub.com%2Fhungryram%2Fmultipurpose-v5%23environment-variables)
 
 **Required Environment Variables:**
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` - Your Sanity project ID
 - `NEXT_PUBLIC_SANITY_DATASET` - `production`
-- `SANITY_API_READ_TOKEN` - Create in [Sanity Manage](https://www.sanity.io/manage) → API → Tokens
+- `SANITY_API_TOKEN` - Create in [Sanity Manage](https://www.sanity.io/manage) → API → Tokens (Editor permissions required)
 - `NEXT_PUBLIC_SITE_URL` - Your deployed URL (e.g., `https://yoursite.com`)
+
+**AI Content Generation (Recommended):**
+- `OPENAI_API_KEY` - For AI-powered content generation ([Get API key](https://platform.openai.com/api-keys))
+- `CRON_SECRET` - For scheduled content automation (generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`)
+- `NEXT_PUBLIC_ENABLE_AI_FEATURES` - Set to `true` to enable AI features
 
 **Optional Environment Variables:**
 - `POSTMARK_API_KEY` - For contact form emails ([Get API key](https://postmarkapp.com/))
 - `SHEETS_CLIENT_EMAIL` - For Google Sheets integration (see [Setup Guide](./GOOGLE_SHEETS_SETUP.md))
 - `SHEETS_PRIVATE_KEY` - For Google Sheets integration
 - `SANITY_WEBHOOK_SECRET` - For on-demand revalidation (generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`)
+
+> **Note:** The AI Content Generation features require additional configuration after deployment. See [AI Content Automation Guide](./AI_CONTENT_AUTOMATION.md) for setup instructions.
 
 ### 3. Deploy the Studio (Admin)
 
