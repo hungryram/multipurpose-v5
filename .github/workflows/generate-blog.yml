@@ -1,0 +1,28 @@
+name: Generate AI Blog Posts
+
+on:
+  schedule:
+    # Monday at 9:00 AM UTC (4 AM EST)
+    - cron: '0 9 * * 1'
+    # Wednesday at 9:00 AM UTC (4 AM EST)
+    - cron: '0 9 * * 3'
+    # Friday at 9:00 AM UTC (4 AM EST)
+    - cron: '0 9 * * 5'
+  
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  generate-blog-post:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Generate Blog Post
+        run: |
+          curl -X POST ${{ secrets.SITE_URL }}/api/cron/generate-blog \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}\n"
+      
+      - name: Log Completion
+        run: echo "Blog post generation triggered at $(date)"
