@@ -116,10 +116,10 @@ export default function TableOfContents({headings}: TableOfContentsProps) {
                 <button
                   onClick={() => handleClick(id)}
                   className={`
-                    block w-full text-left py-1.5 pl-4 -ml-[2px] border-l-2 transition-all
+                    block w-full text-left py-1.5 pl-4 -ml-0.5 border-l-2 transition-all cursor-pointer
                     ${
                       activeId === id
-                        ? 'border-blue-600 text-blue-600 font-medium'
+                        ? 'border-brand-primary font-medium'
                         : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
                     }
                   `}
@@ -135,7 +135,7 @@ export default function TableOfContents({headings}: TableOfContentsProps) {
             <div className="text-xs text-gray-500 mb-2">Reading progress</div>
             <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-blue-600 transition-all duration-300"
+                className="h-full bg-brand-primary transition-all duration-300"
                 style={{
                   width: `${
                     headings.length > 0

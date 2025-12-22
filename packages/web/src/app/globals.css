@@ -8,6 +8,12 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
+  /* Brand colors from Sanity Appearance */
+  --color-brand-primary: var(--brand-primary, #000000);
+  --color-brand-secondary: var(--brand-secondary, #6b7280);
+  --color-brand-accent: var(--brand-accent, #3b82f6);
+  --color-brand-neutral: var(--brand-neutral, #f3f4f6);
+
   --breakpoint-*: initial;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;

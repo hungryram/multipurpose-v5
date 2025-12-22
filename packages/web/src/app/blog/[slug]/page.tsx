@@ -29,6 +29,12 @@ const postQuery = groq`*[_type == "post" && slug.current == $slug][0] {
     image
   },
   categories[]->{
+    _id,
+    title,
+    slug
+  },
+  tags[]->{
+    _id,
     title,
     slug
   },
@@ -193,7 +199,7 @@ export default async function BlogPost({params}: Props) {
               <span className="text-sm font-semibold text-gray-700">Tags:</span>
               {post.tags.map((tag: any) => (
                 <span
-                  key={tag.slug.current}
+                  key={tag._id || tag.slug.current}
                   className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
                 >
                   #{tag.title}

@@ -78,6 +78,10 @@ export default async function RootLayout({
             --header-text-scroll: ${appearance?.header?.navScrollColor?.hex || '#000000'};
             --footer-bg: ${appearance?.footer?.footerBackgroundColor?.hex || '#000000'};
             --footer-text: ${appearance?.footer?.textColor?.hex || '#ffffff'};
+            --brand-primary: ${appearance?.mainColors?.primaryColor?.hex || '#000000'};
+            --brand-secondary: ${appearance?.mainColors?.secondaryColor?.hex || '#6b7280'};
+            --brand-accent: ${appearance?.mainColors?.accentColor?.hex || '#3b82f6'};
+            --brand-neutral: ${appearance?.mainColors?.neutralColor?.hex || '#f3f4f6'};
           }
         `}} />
       </head>

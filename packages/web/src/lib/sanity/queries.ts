@@ -294,6 +294,7 @@ export const profileQuery = groq`
 
 export const brandBriefQuery = groq`
   *[_type == "brandBrief"][0] {
+    businessOverview,
     industry,
     businessModel,
     productServices,
@@ -316,7 +317,10 @@ export const brandBriefQuery = groq`
     toneOfVoice,
     writingStyle,
     avoidWords,
-    preferredWords
+    preferredWords,
+    aiImageGeneration,
+    aiImageStyle,
+    aiImageQuality
   }
 `
 

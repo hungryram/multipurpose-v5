@@ -201,7 +201,9 @@ export async function POST(request: Request) {
       style = 'professional',
       wordCount = 'medium',
       businessProfile,
-      generateImage = true,
+      generateImage,
+      imageStyle,
+      imageQuality,
       relatedArticles = [],
     } = body
 
@@ -228,12 +230,16 @@ export async function POST(request: Request) {
     
     // Enhanced context from Brand Brief
     if (brandBrief) {
+      if (brandBrief.businessOverview) {
+        contextParts.push(`Business Overview: ${brandBrief.businessOverview}`)
+      }
+      
       if (brandBrief.industry) {
         contextParts.push(`Industry: ${brandBrief.industry}`)
       }
       
       if (brandBrief.productServices) {
-        contextParts.push(`About: ${brandBrief.productServices}`)
+        contextParts.push(`Products/Services: ${brandBrief.productServices}`)
       }
       
       if (brandBrief.uniqueSellingProposition) {
@@ -377,17 +383,46 @@ Focus on informative text content with strategic internal links.`,
     const seoText = seoCompletion.choices[0]?.message?.content
     const seo = seoText ? JSON.parse(seoText) : {}
 
+    // Use Brand Brief settings for image generation if not explicitly provided
+    const shouldGenerateImage = generateImage !== undefined ? generateImage : brandBrief?.aiImageGeneration !== false
+    const finalImageStyle = imageStyle || brandBrief?.aiImageStyle || 'photographic'
+    const finalImageQuality = imageQuality || brandBrief?.aiImageQuality || 'standard'
+
     // Generate featured image if requested
     let imageAsset = null
-    if (generateImage) {
+    if (shouldGenerateImage) {
       try {
-        const imagePrompt = `Create a professional, modern blog featured image for an article about: ${title}. Style: clean, minimalist, corporate-friendly.`
+        // Build image prompt based on article content and style
+        let imagePrompt = `Professional blog featured image for article about: ${title}.`
+        
+        // Enhance prompt based on style
+        switch (finalImageStyle) {
+          case 'photographic':
+            imagePrompt += ' High-quality photograph, professional, sharp focus, realistic.'
+            break
+          case 'digital-art':
+            imagePrompt += ' Modern digital art, clean design, professional.'
+            break
+          case 'minimalist':
+            imagePrompt += ' Minimalist design, clean, simple, modern, lots of negative space.'
+            break
+          case 'abstract':
+            imagePrompt += ' Abstract artistic interpretation, creative, modern.'
+            break
+          case 'illustration':
+            imagePrompt += ' Professional illustration, detailed, polished, commercial quality.'
+            break
+          case 'natural':
+          default:
+            imagePrompt += ' Clean, professional, corporate-friendly.'
+            break
+        }
         
         const imageResponse = await openai.images.generate({
           model: 'dall-e-3',
           prompt: imagePrompt,
           size: '1792x1024',
-          quality: 'standard',
+          quality: finalImageQuality as 'standard' | 'hd',
           n: 1,
         })
 
@@ -399,6 +434,7 @@ Focus on informative text content with strategic internal links.`,
           // Return image data for manual upload or include URL for client-side handling
           imageAsset = {
             imageUrl,
+            revisedPrompt: imageResponse.data?.[0]?.revised_prompt,
             // Will be uploaded to Sanity in the cron endpoint
           }
         }

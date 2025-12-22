@@ -28,10 +28,6 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log('[Contact Form] Received submission:', Object.keys(data))
-    console.log('[Contact Form] _notificationEmail value:', data._notificationEmail)
-    console.log('[Contact Form] Full form data:', JSON.stringify(data, null, 2))
-
     // Get notification email from form data or fallback to profile
     let notificationEmail = data._notificationEmail
     
@@ -39,9 +35,7 @@ export async function POST(request: Request) {
       // Fetch notification email from Sanity profile as fallback
       const profile = await client.fetch(profileQuery)
       notificationEmail = profile?.contact_information?.email
-      console.log('[Contact Form] Using profile email:', notificationEmail)
     } else {
-      console.log('[Contact Form] Using form-specific email:', notificationEmail)
       // Remove internal field from data before sending email
       delete data._notificationEmail
     }
@@ -60,11 +54,8 @@ export async function POST(request: Request) {
     delete data._googleSheetId
     delete data._googleSheetTabName
 
-    console.log('[Contact Form] Postmark client initialized:', !!postmarkClient)
-
     // Send email via Postmark if configured
     if (postmarkClient && notificationEmail) {
-      console.log('[Contact Form] Attempting to send email...')
       
       try {
         const emailResult = await postmarkClient.sendEmail({
@@ -75,8 +66,6 @@ export async function POST(request: Request) {
           TextBody: generateEmailText(data, submittedFrom, fieldLabels),
           MessageStream: 'outbound',
         })
-        
-        console.log('[Contact Form] Email sent successfully:', emailResult)
       } catch (emailError) {
         console.error('[Contact Form] Postmark error:', emailError)
         console.error('[Contact Form] Error details:', JSON.stringify(emailError, null, 2))

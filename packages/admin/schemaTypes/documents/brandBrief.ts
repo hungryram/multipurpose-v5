@@ -10,6 +10,7 @@ export default defineType({
     {name: 'competitors', title: 'Competitors'},
     {name: 'content', title: 'Content Strategy'},
     {name: 'voice', title: 'Brand Voice'},
+    {name: 'ai', title: 'AI Settings'},
   ],
   fields: [
     {
@@ -20,6 +21,15 @@ export default defineType({
       hidden: true,
     },
     // Business Info
+    {
+      name: 'businessOverview',
+      title: 'Business Overview',
+      type: 'text',
+      rows: 5,
+      description: 'Provide a comprehensive overview of your business. What do you do? What problems do you solve? What makes your business unique?',
+      placeholder: 'We help small businesses streamline their operations by providing an all-in-one platform for project management, team collaboration, and client communication. Founded in 2020, we\'ve helped over 1,000 teams work more efficiently...',
+      group: 'business',
+    },
     {
       name: 'industry',
       title: 'Industry',
@@ -257,6 +267,49 @@ export default defineType({
       of: [{type: 'string'}],
       description: 'Words that resonate with your brand voice',
       group: 'voice',
+    },
+    // AI Settings
+    {
+      name: 'aiImageGeneration',
+      title: 'Enable AI Image Generation',
+      type: 'boolean',
+      description: 'Automatically generate featured images for blog posts',
+      initialValue: true,
+      group: 'ai',
+    },
+    {
+      name: 'aiImageStyle',
+      title: 'AI Image Style',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Photographic (Realistic)', value: 'photographic'},
+          {title: 'Digital Art (Modern)', value: 'digital-art'},
+          {title: 'Illustration (Professional)', value: 'illustration'},
+          {title: 'Minimalist (Clean & Simple)', value: 'minimalist'},
+          {title: 'Abstract (Artistic)', value: 'abstract'},
+          {title: 'Natural (Default)', value: 'natural'},
+        ],
+      },
+      initialValue: 'photographic',
+      description: 'Visual style for auto-generated blog images',
+      group: 'ai',
+      hidden: ({parent}) => !parent?.aiImageGeneration,
+    },
+    {
+      name: 'aiImageQuality',
+      title: 'AI Image Quality',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Standard (Faster, lower cost)', value: 'standard'},
+          {title: 'HD (Higher quality, slower)', value: 'hd'},
+        ],
+      },
+      initialValue: 'standard',
+      description: 'Quality level for generated images',
+      group: 'ai',
+      hidden: ({parent}) => !parent?.aiImageGeneration,
     },
   ],
   preview: {

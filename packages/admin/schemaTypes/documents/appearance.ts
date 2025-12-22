@@ -43,7 +43,6 @@ export default defineType({
       to: [{type: 'home'}],
       group: 'general',
       description: 'Select which home page document to display on the homepage',
-      validation: (Rule) => Rule.required(),
     },
     {
       name: 'branding',

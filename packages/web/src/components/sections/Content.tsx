@@ -118,7 +118,6 @@ export default function Content({ data }: ContentProps) {
         <SectionHeader
           content={content}
           primaryButton={primaryButton}
-          contentClassName="prose max-w-none [&>*:first-child]:text-3xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight sm:[&>*:first-child]:text-4xl"
           buttonsClassName="mt-8"
           align={textAlign}
         />

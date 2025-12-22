@@ -1,6 +1,7 @@
 import {defineType} from 'sanity'
 import {sectionSettingsFields} from '../fragments/sectionSettings'
 import {colorReferenceField, customColorField} from '../fragments/colorReference'
+import {AIImageInput} from '../../components/AIImageInput'
 
 export default defineType({
   name: 'hero',
@@ -24,6 +25,9 @@ export default defineType({
       type: 'image',
       options: {
         hotspot: true,
+      },
+      components: {
+        input: AIImageInput,
       },
       group: 'content',
     },

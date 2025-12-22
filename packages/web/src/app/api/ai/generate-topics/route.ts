@@ -61,6 +61,10 @@ export async function POST(request: Request) {
 
     // Enhanced context from Brand Brief
     if (brandBrief) {
+      if (brandBrief.businessOverview) {
+        contextParts.push(`Business Overview: ${brandBrief.businessOverview}`)
+      }
+      
       if (brandBrief.industry) {
         contextParts.push(`Industry: ${brandBrief.industry}`)
       }

@@ -2,6 +2,7 @@ import {defineType} from 'sanity'
 import {InternalLinkSuggestions} from '../../components/InternalLinkSuggestions'
 import {AltTextGenerator} from '../../components/AltTextGenerator'
 import {ExcerptGenerator} from '../../components/ExcerptGenerator'
+import {AIImageInput} from '../../components/AIImageInput'
 
 export default defineType({
   name: 'post',
@@ -45,6 +46,9 @@ export default defineType({
       type: 'image',
       options: {
         hotspot: true,
+      },
+      components: {
+        input: AIImageInput,
       },
       fields: [
         {
