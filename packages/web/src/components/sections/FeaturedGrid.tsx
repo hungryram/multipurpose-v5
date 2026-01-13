@@ -1,6 +1,7 @@
 import SectionHeader from '@/components/SectionHeader'
 import Button from '@/components/Button'
 import Image from 'next/image'
+import Link from 'next/link'
 import {urlFor} from '@/lib/sanity/image'
 import {cn} from '@/lib/utils'
 import {resolveColor} from '@/lib/utils/resolveColor'
@@ -89,8 +90,25 @@ export default function FeaturedGrid({data, appearance}: FeaturedGridProps) {
         {blocks.map((block) => {
           // Text Overlay on Image
           if (layout === 'textOverlay') {
-            return (
-              <div key={block._key} className="relative overflow-hidden group">
+            // Get button link for the entire card
+            const getCardLink = () => {
+              if (!block.button) return null
+              if (block.button.linkType === 'internal' && block.button.internalLink) {
+                const ref = block.button.internalLink
+                if (ref._type === 'home') return '/'
+                if (ref._type === 'blogIndex') return '/blog'
+                if (ref._type === 'servicesIndex') return '/services'
+                if (ref._type === 'post') return `/blog/${ref.slug || ''}`
+                if (ref._type === 'service') return `/services/${ref.slug || ''}`
+                if (ref._type === 'page') return `/${ref.slug || ''}`
+              }
+              if (block.button.linkType === 'external') return block.button.externalUrl
+              return null
+            }
+
+            const cardLink = getCardLink()
+            const content = (
+              <>
                 {block.image && (
                   <Image
                     src={urlFor(block.image).width(600).height(400).url()}
@@ -102,29 +120,44 @@ export default function FeaturedGrid({data, appearance}: FeaturedGridProps) {
                     blurDataURL={block.image.asset?.metadata?.lqip}
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-center items-center p-6 text-center">
                   {block.heading && (
                     <h3 
-                      className="text-2xl font-bold mb-2"
-                      style={{color: resolveColor(headingColorRef, headingCustomColor, appearance)}}
+                      className="text-2xl font-bold mb-2 text-white"
+                      style={{color: resolveColor(headingColorRef, headingCustomColor, appearance) || 'white'}}
                     >
                       {block.heading}
                     </h3>
                   )}
                   {block.content && (
                     <div 
-                      className="prose prose-invert prose-sm"
-                      style={{color: resolveColor(contentColorRef, contentCustomColor, appearance)}}
+                      className="prose prose-invert prose-sm max-w-lg"
+                      style={{color: resolveColor(contentColorRef, contentCustomColor, appearance) || 'white'}}
                     >
                       <PortableTextBlock value={block.content} appearance={appearance} />
                     </div>
                   )}
-                  {block.button && (
-                    <div className="mt-4">
-                      <Button data={block.button} />
-                    </div>
-                  )}
                 </div>
+              </>
+            )
+
+            if (cardLink) {
+              return (
+                <Link 
+                  key={block._key} 
+                  href={cardLink}
+                  target={block.button?.newTab ? '_blank' : undefined}
+                  rel={block.button?.newTab ? 'noopener noreferrer' : undefined}
+                  className="relative overflow-hidden group block cursor-pointer"
+                >
+                  {content}
+                </Link>
+              )
+            }
+
+            return (
+              <div key={block._key} className="relative overflow-hidden group">
+                {content}
               </div>
             )
           }

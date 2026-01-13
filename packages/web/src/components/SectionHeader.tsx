@@ -1,8 +1,6 @@
 import PortableTextBlock from '@/components/PortableTextBlock'
 import Button from '@/components/Button'
 import {cn} from '@/lib/utils'
-import {client} from '@/lib/sanity/client'
-import {appearanceQuery} from '@/lib/sanity/queries'
 
 interface SectionHeaderProps {
   content?: any[]
@@ -11,17 +9,18 @@ interface SectionHeaderProps {
   contentClassName?: string
   buttonsClassName?: string
   align?: 'left' | 'center' | 'right'
+  appearance?: any
 }
 
-export default async function SectionHeader({
+export default function SectionHeader({
   content,
   primaryButton,
   secondaryButton,
   contentClassName = '',
   buttonsClassName = 'mt-10 flex flex-wrap gap-4',
   align = 'center',
+  appearance,
 }: SectionHeaderProps) {
-  const appearance = await client.fetch(appearanceQuery)
   
   const alignmentClasses = {
     left: 'text-left items-start',

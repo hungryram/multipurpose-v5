@@ -5,7 +5,63 @@ import {colorReferenceField, customColorField} from './colorReference'
 export const blockContent = {
   type: 'block',
   marks: {
+    decorators: [
+      {title: 'Strong', value: 'strong'},
+      {title: 'Emphasis', value: 'em'},
+      {title: 'Code', value: 'code'},
+      {title: 'Underline', value: 'underline'},
+      {title: 'Strike', value: 'strike-through'},
+    ],
     annotations: [
+      {
+        name: 'textColor',
+        type: 'object',
+        title: 'Text Color',
+        icon: () => '🎨',
+        fields: [
+          {
+            ...colorReferenceField,
+            name: 'colorRef',
+            title: 'Color',
+            description: 'Select text color',
+          },
+          {
+            ...customColorField,
+            name: 'customColor',
+            title: 'Custom Color',
+            hidden: ({parent}: any) => parent?.colorRef !== 'custom',
+          },
+        ],
+      },
+      {
+        name: 'fontSize',
+        type: 'object',
+        title: 'Font Size',
+        icon: () => '📏',
+        fields: [
+          {
+            name: 'size',
+            type: 'string',
+            title: 'Size',
+            options: {
+              list: [
+                {title: 'Extra Small (0.75rem / 12px)', value: 'xs'},
+                {title: 'Small (0.875rem / 14px)', value: 'sm'},
+                {title: 'Normal (1rem / 16px)', value: 'base'},
+                {title: 'Medium (1.125rem / 18px)', value: 'lg'},
+                {title: 'Large (1.25rem / 20px)', value: 'xl'},
+                {title: 'Extra Large (1.5rem / 24px)', value: '2xl'},
+                {title: '2X Large (1.875rem / 30px)', value: '3xl'},
+                {title: '3X Large (2.25rem / 36px)', value: '4xl'},
+                {title: '4X Large (3rem / 48px)', value: '5xl'},
+                {title: '5X Large (3.75rem / 60px)', value: '6xl'},
+              ],
+              layout: 'dropdown',
+            },
+            initialValue: 'base',
+          },
+        ],
+      },
       {
         name: 'link',
         type: 'object',
@@ -74,6 +130,64 @@ export default defineType({
   type: 'array',
   of: [
     blockContent,
+    {
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative text',
+          description: 'Important for SEO and accessibility',
+        },
+        {
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+          description: 'Optional caption displayed below the image',
+        },
+        {
+          name: 'size',
+          type: 'string',
+          title: 'Size',
+          description: 'Image width',
+          options: {
+            list: [
+              {title: 'Small (400px)', value: 'small'},
+              {title: 'Medium (600px)', value: 'medium'},
+              {title: 'Large (800px)', value: 'large'},
+              {title: 'Full Width', value: 'full'},
+              {title: 'Custom', value: 'custom'},
+            ],
+          },
+          initialValue: 'large',
+        },
+        {
+          name: 'customWidth',
+          type: 'number',
+          title: 'Custom Width (px)',
+          description: 'Width in pixels',
+          validation: (Rule: any) => Rule.min(100).max(2000),
+          hidden: ({parent}: any) => parent?.size !== 'custom',
+        },
+        {
+          name: 'alignment',
+          type: 'string',
+          title: 'Alignment',
+          description: 'Image alignment',
+          options: {
+            list: [
+              {title: 'Left', value: 'left'},
+              {title: 'Center', value: 'center'},
+              {title: 'Right', value: 'right'},
+            ],
+          },
+          initialValue: 'center',
+        },
+      ],
+    },
     {
       name: 'breadcrumb',
       type: 'object',

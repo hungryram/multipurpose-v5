@@ -71,6 +71,11 @@ export default async function Footer() {
 
         <div className="mt-8 border-t pt-8 text-center text-sm opacity-70" style={{color: textColor || undefined}}>
           <p style={{color: textColor || undefined}}>© <CurrentYear /> {profile?.company_name}. All rights reserved.</p>
+          {appearance?.footer?.disclaimer && (
+            <div className="mt-4 text-xs opacity-60 [&_*]:!text-inherit" style={{color: textColor || undefined}}>
+              <PortableTextBlock value={appearance.footer.disclaimer} />
+            </div>
+          )}
         </div>
       </div>
     </footer>

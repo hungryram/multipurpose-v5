@@ -38,22 +38,26 @@ export default function Testimonials({
   
   if (!testimonials?.length) return null
 
-  // Auto-advance carousel
-  useEffect(() => {
-    if (layout === 'carousel' && testimonials.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-      }, 5000) // Change slide every 5 seconds
-      return () => clearInterval(interval)
-    }
-  }, [layout, testimonials.length])
-
   const bgColor = backgroundColor?.hex || 'transparent'
   const gridCols = {
     1: 'grid-cols-1',
     2: 'md:grid-cols-2',
     3: 'md:grid-cols-2 lg:grid-cols-3',
   }[columns] || 'md:grid-cols-2 lg:grid-cols-3'
+
+  // Calculate items per slide for carousel
+  const itemsPerSlide = layout === 'carousel' ? columns : 1
+  const totalSlides = Math.ceil(testimonials.length / itemsPerSlide)
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (layout === 'carousel' && totalSlides > 1) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % totalSlides)
+      }, 5000) // Change slide every 5 seconds
+      return () => clearInterval(interval)
+    }
+  }, [layout, totalSlides])
 
   const textAlignClass = {
     left: 'text-left',
@@ -130,24 +134,32 @@ export default function Testimonials({
 
       {/* Carousel Layout */}
       {layout === 'carousel' && (
-        <div className="relative overflow-hidden max-w-4xl mx-auto">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{transform: `translateX(-${currentIndex * 100}%)`}}
-          >
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="w-full flex-shrink-0 px-4">
-                <TestimonialCard testimonial={testimonial} />
-              </div>
-            ))}
+        <div>
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{transform: `translateX(-${currentIndex * 100}%)`}}
+            >
+              {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+                <div key={slideIndex} className="w-full flex-shrink-0 px-4">
+                  <div className={cn('grid gap-8', gridCols)}>
+                    {testimonials
+                      .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
+                      .map((testimonial, index) => (
+                        <TestimonialCard key={slideIndex * itemsPerSlide + index} testimonial={testimonial} />
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Carousel Navigation */}
-          {testimonials.length > 1 && (
+          {totalSlides > 1 && (
             <>
               {/* Dots */}
               <div className="flex justify-center gap-2 mt-8">
-                {testimonials.map((_, index) => (
+                {Array.from({ length: totalSlides }).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
@@ -155,25 +167,25 @@ export default function Testimonials({
                       'w-2 h-2 rounded-full transition-all',
                       index === currentIndex ? 'bg-gray-800 w-6' : 'bg-gray-300'
                     )}
-                    aria-label={`Go to testimonial ${index + 1}`}
+                    aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}
               </div>
 
               {/* Arrow buttons */}
               <button
-                onClick={() => setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
+                onClick={() => setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides)}
                 className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
-                aria-label="Previous testimonial"
+                aria-label="Previous slide"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <button
-                onClick={() => setCurrentIndex((prev) => (prev + 1) % testimonials.length)}
+                onClick={() => setCurrentIndex((prev) => (prev + 1) % totalSlides)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
-                aria-label="Next testimonial"
+                aria-label="Next slide"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
