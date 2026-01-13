@@ -29,9 +29,7 @@ export default defineType({
     {
       title: 'Content',
       name: 'content',
-      type: 'array',
-      of: [{type: 'block'}],
-      description: 'Heading and description above the grid',
+      type: 'blockContent',
       group: 'content',
     },
     {
@@ -48,6 +46,9 @@ export default defineType({
               title: 'Image',
               name: 'image',
               type: 'image',
+              options: {
+                hotspot: true,
+              },
             },
             {
               title: 'Heading',
@@ -82,6 +83,87 @@ export default defineType({
       description: 'Number of columns in the grid (1-4)',
       validation: (Rule) => Rule.min(1).max(4),
       initialValue: 3,
+      group: 'settings',
+    },
+    {
+      title: 'Gap Size',
+      name: 'gap',
+      type: 'string',
+      description: 'Space between grid items',
+      options: {
+        list: [
+          {title: 'No Gap', value: 'none'},
+          {title: 'Small', value: 'small'},
+          {title: 'Medium', value: 'medium'},
+          {title: 'Large', value: 'large'},
+        ],
+      },
+      initialValue: 'medium',
+      group: 'settings',
+    },
+    {
+      title: 'Image Height',
+      name: 'imageHeight',
+      type: 'string',
+      description: 'Height of images in the grid',
+      options: {
+        list: [
+          {title: 'Small (200px)', value: 'small'},
+          {title: 'Medium (256px)', value: 'medium'},
+          {title: 'Large (320px)', value: 'large'},
+          {title: 'Extra Large (400px)', value: 'xlarge'},
+          {title: 'Auto (Original Ratio)', value: 'auto'},
+        ],
+      },
+      initialValue: 'medium',
+      group: 'settings',
+    },
+    {
+      title: 'Heading Color',
+      name: 'headingColorRef',
+      type: 'string',
+      description: 'Color for all block headings',
+      options: {
+        list: [
+          {title: 'Default', value: ''},
+          {title: 'Accent', value: 'accent'},
+          {title: 'Primary', value: 'primary'},
+          {title: 'Secondary', value: 'secondary'},
+          {title: 'Custom', value: 'custom'},
+        ],
+      },
+      group: 'settings',
+    },
+    {
+      title: 'Custom Heading Color',
+      name: 'headingCustomColor',
+      type: 'color',
+      description: 'Custom color override for headings',
+      hidden: ({parent}) => parent?.headingColorRef !== 'custom',
+      group: 'settings',
+    },
+    {
+      title: 'Content Color',
+      name: 'contentColorRef',
+      type: 'string',
+      description: 'Color for all block content text',
+      options: {
+        list: [
+          {title: 'Default', value: ''},
+          {title: 'Accent', value: 'accent'},
+          {title: 'Primary', value: 'primary'},
+          {title: 'Secondary', value: 'secondary'},
+          {title: 'Custom', value: 'custom'},
+        ],
+      },
+      group: 'settings',
+    },
+    {
+      title: 'Custom Content Color',
+      name: 'contentCustomColor',
+      type: 'color',
+      description: 'Custom color override for content',
+      hidden: ({parent}) => parent?.contentColorRef !== 'custom',
       group: 'settings',
     },
     ...sectionSettingsFields,

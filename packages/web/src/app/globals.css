@@ -151,7 +151,7 @@ body {
 
 /* Apply default text color to common text elements - but exclude form elements */
 p, span:not([data-slot]), div:not([data-slot]), li, a, td, th {
-  color: var(--text-color, var(--foreground)) !important;
+  color: var(--text-color, var(--foreground));
 }
 
 /* Ensure form elements maintain proper styling */
@@ -182,7 +182,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Section text color override - applies when textColor is set in sectionSettings */
 section[style*="--section-text-color"] * {
-  color: var(--section-text-color) !important;
+  color: var(--section-text-color);
 }
 
 @utility content {
@@ -190,7 +190,7 @@ section[style*="--section-text-color"] * {
     font-size: theme("fontSize.3xl");
 
     @variant md {
-      font-size: theme("fontSize.5xl");
+      font-size: theme("fontSize.4xl");
     }
   }
 

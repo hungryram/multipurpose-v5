@@ -1,19 +1,27 @@
 'use client'
 
 import {PortableText, PortableTextReactComponents} from '@portabletext/react'
-import {portableTextComponents} from './PortableTextComponents'
+import {getPortableTextComponents} from './PortableTextComponents'
+import {useMemo} from 'react'
 
 interface PortableTextBlockProps {
   value: any
   className?: string
   components?: Partial<PortableTextReactComponents>
+  appearance?: any // Optional appearance prop from server component
 }
 
 export default function PortableTextBlock({
   value,
   className = '',
   components,
+  appearance,
 }: PortableTextBlockProps) {
+  // Memoize components to recreate when appearance changes
+  const portableTextComponents = useMemo(() => {
+    return {...getPortableTextComponents(appearance), ...components}
+  }, [appearance, components])
+
   if (!value) return null
 
   // Ensure value is an array - portable text expects an array of blocks
@@ -28,7 +36,7 @@ export default function PortableTextBlock({
     <div className={className}>
       <PortableText
         value={validContent}
-        components={components || portableTextComponents}
+        components={portableTextComponents}
       />
     </div>
   )

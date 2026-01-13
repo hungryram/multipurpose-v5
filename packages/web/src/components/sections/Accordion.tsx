@@ -18,9 +18,10 @@ interface AccordionProps {
     allowMultiple?: boolean
     firstOpen?: boolean
   }
+  appearance?: any
 }
 
-export default function Accordion({data}: AccordionProps) {
+export default function Accordion({data, appearance}: AccordionProps) {
   const {
     content,
     textAlign = 'left',
@@ -87,7 +88,7 @@ export default function Accordion({data}: AccordionProps) {
                 )}
               >
                 <div className="p-4 pt-0 prose prose-lg max-w-none">
-                  <PortableTextBlock value={item.content} />
+                  <PortableTextBlock value={item.content} appearance={appearance} />
                 </div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import {PortableTextComponents} from '@portabletext/react'
 import {urlFor} from '@/lib/sanity/image'
 import {slugify} from '@/lib/utils/toc'
 import {usePathname} from 'next/navigation'
+import {resolveColor} from '@/lib/utils/resolveColor'
 
 export const portableTextComponents: PortableTextComponents = {
   block: {
@@ -13,7 +14,7 @@ export const portableTextComponents: PortableTextComponents = {
       const text = (value as any)?.children?.map((c: any) => c.text).join('') || ''
       const id = slugify(text)
       return (
-        <h1 id={id} className="text-4xl font-bold mt-8 mb-4 text-gray-900 scroll-mt-24">
+        <h1 id={id} className="text-4xl font-bold mt-8 mb-4 scroll-mt-24">
           {children}
         </h1>
       )
@@ -22,40 +23,40 @@ export const portableTextComponents: PortableTextComponents = {
       const text = (value as any)?.children?.map((c: any) => c.text).join('') || ''
       const id = slugify(text)
       return (
-        <h2 id={id} className="text-3xl font-bold mt-8 mb-4 text-gray-900 scroll-mt-24">
+        <h2 id={id} className="text-3xl font-bold mt-8 mb-4 scroll-mt-24">
           {children}
         </h2>
       )
     },
     h3: ({children}) => (
-      <h3 className="text-2xl font-bold mt-6 mb-3 text-gray-900">{children}</h3>
+      <h3 className="text-2xl font-bold mt-6 mb-3">{children}</h3>
     ),
     h4: ({children}) => (
-      <h4 className="text-xl font-bold mt-6 mb-3 text-gray-900">{children}</h4>
+      <h4 className="text-xl font-bold mt-6 mb-3">{children}</h4>
     ),
     h5: ({children}) => (
-      <h5 className="text-lg font-bold mt-4 mb-2 text-gray-900">{children}</h5>
+      <h5 className="text-lg font-bold mt-4 mb-2">{children}</h5>
     ),
     h6: ({children}) => (
-      <h6 className="text-base font-bold mt-4 mb-2 text-gray-900">{children}</h6>
+      <h6 className="text-base font-bold mt-4 mb-2">{children}</h6>
     ),
     normal: ({children}) => (
-      <p className="mb-4 text-gray-700 leading-relaxed">{children}</p>
+      <p className="mb-4 leading-relaxed">{children}</p>
     ),
     blockquote: ({children}) => (
-      <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-6 italic text-gray-700 bg-gray-50">
+      <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-6 italic bg-gray-50">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({children}) => (
-      <ul className="list-disc list-outside ml-6 mb-4 space-y-2 text-gray-700">
+      <ul className="list-disc list-outside ml-6 mb-4 space-y-2">
         {children}
       </ul>
     ),
     number: ({children}) => (
-      <ol className="list-decimal list-outside ml-6 mb-4 space-y-2 text-gray-700">
+      <ol className="list-decimal list-outside ml-6 mb-4 space-y-2">
         {children}
       </ol>
     ),
@@ -66,7 +67,7 @@ export const portableTextComponents: PortableTextComponents = {
   },
   marks: {
     strong: ({children}) => (
-      <strong className="font-bold text-gray-900">{children}</strong>
+      <strong className="font-bold">{children}</strong>
     ),
     em: ({children}) => <em className="italic">{children}</em>,
     code: ({children}) => (
@@ -74,6 +75,34 @@ export const portableTextComponents: PortableTextComponents = {
         {children}
       </code>
     ),
+    underline: ({children}) => <span className="underline">{children}</span>,
+    'strike-through': ({children}) => <span className="line-through">{children}</span>,
+    textColor: ({children, value}) => {
+      // This will be replaced at runtime with appearance-aware version
+      const color = value?.customColor?.hex || value?.colorRef
+      if (!color || color === 'default') return <>{children}</>
+      
+      return <span style={{color}}>{children}</span>
+    },
+    fontSize: ({children, value}) => {
+      const sizeMap: Record<string, string> = {
+        xs: '0.75rem',      // 12px
+        sm: '0.875rem',     // 14px
+        base: '1rem',       // 16px (default)
+        lg: '1.125rem',     // 18px
+        xl: '1.25rem',      // 20px
+        '2xl': '1.5rem',    // 24px
+        '3xl': '1.875rem',  // 30px
+        '4xl': '2.25rem',   // 36px
+        '5xl': '3rem',      // 48px
+        '6xl': '3.75rem',   // 60px
+      }
+      
+      const size = value?.size || 'base'
+      const fontSize = sizeMap[size] || '1rem'
+      
+      return <span style={{fontSize}}>{children}</span>
+    },
     link: ({children, value}) => {
       // Handle new dynamic link annotation
       if (value?.linkType === 'internal' && value?.internalLink) {
@@ -209,4 +238,19 @@ export const portableTextComponents: PortableTextComponents = {
       </pre>
     ),
   },
+}
+export function getPortableTextComponents(appearance?: any): PortableTextComponents {
+  return {
+    ...portableTextComponents,
+    marks: {
+      ...portableTextComponents.marks,
+      textColor: ({children, value}) => {
+        const color = resolveColor(value?.colorRef, value?.customColor, appearance)
+        
+        if (!color || color === 'default') return <>{children}</>
+
+        return <span style={{color}}>{children}</span>
+      },
+    } as any,
+  }
 }

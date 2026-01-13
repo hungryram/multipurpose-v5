@@ -59,6 +59,7 @@ interface ContactFormProps {
   sideContent?: any[]
   backgroundColor?: {hex: string}
   textAlign?: 'left' | 'center' | 'right'
+  appearance?: any
 }
 
 // Build Zod schema dynamically from formFields
@@ -117,6 +118,7 @@ export default function ContactForm({
   sideContent,
   backgroundColor,
   textAlign = 'center',
+  appearance,
 }: ContactFormProps) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
 
@@ -332,7 +334,7 @@ export default function ContactForm({
               align={textAlign}
             />
             <div className="prose prose-lg max-w-none">
-              <PortableTextBlock value={sideContent} />
+              <PortableTextBlock value={sideContent} appearance={appearance} />
             </div>
           </div>
           <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">

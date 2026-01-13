@@ -27,7 +27,7 @@ export const getSectionSpacing = (
   
   // If same top/bottom and not custom, use shorthand
   if (paddingTop === paddingBottom && paddingTop) {
-    return spacingMap[paddingTop as keyof typeof spacingMap] || spacingMap.medium
+    return spacingMap[paddingTop as keyof typeof spacingMap] || ''
   }
   
   // Different top/bottom, use separate classes
@@ -46,8 +46,8 @@ export const getSectionSpacing = (
     xlarge: 'pb-32 md:pb-48',
   }
   
-  const topClass = paddingTop ? (topMap[paddingTop as keyof typeof topMap] || topMap.medium) : topMap.medium
-  const bottomClass = paddingBottom ? (bottomMap[paddingBottom as keyof typeof bottomMap] || bottomMap.medium) : bottomMap.medium
+  const topClass = topMap[paddingTop as keyof typeof topMap] ?? topMap.medium
+  const bottomClass = bottomMap[paddingBottom as keyof typeof bottomMap] ?? bottomMap.medium
   
   return `${topClass} ${bottomClass}`.trim()
 }

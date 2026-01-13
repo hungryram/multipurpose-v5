@@ -3,6 +3,7 @@ import Button from '@/components/Button'
 import Image from 'next/image'
 import {urlFor} from '@/lib/sanity/image'
 import {cn} from '@/lib/utils'
+import {resolveColor} from '@/lib/utils/resolveColor'
 import PortableTextBlock from '@/components/PortableTextBlock'
 
 interface FeaturedGridProps {
@@ -20,10 +21,17 @@ interface FeaturedGridProps {
       button?: any
     }>
     columns?: number
+    gap?: 'none' | 'small' | 'medium' | 'large'
+    imageHeight?: 'small' | 'medium' | 'large' | 'xlarge' | 'auto'
+    headingColorRef?: string
+    headingCustomColor?: {hex: string}
+    contentColorRef?: string
+    contentCustomColor?: {hex: string}
   }
+  appearance?: any
 }
 
-export default function FeaturedGrid({data}: FeaturedGridProps) {
+export default function FeaturedGrid({data, appearance}: FeaturedGridProps) {
   const {
     content,
     layout = 'textBelow',
@@ -32,6 +40,12 @@ export default function FeaturedGrid({data}: FeaturedGridProps) {
     secondaryButton,
     blocks = [],
     columns = 3,
+    gap = 'medium',
+    imageHeight = 'medium',
+    headingColorRef,
+    headingCustomColor,
+    contentColorRef,
+    contentCustomColor,
   } = data
 
   const gridCols = {
@@ -39,6 +53,21 @@ export default function FeaturedGrid({data}: FeaturedGridProps) {
     2: 'grid-cols-1 md:grid-cols-2',
     3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
     4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+  }
+
+  const gapClasses = {
+    none: 'gap-0',
+    small: 'gap-4',
+    medium: 'gap-8',
+    large: 'gap-12',
+  }
+
+  const heightClasses = {
+    small: 'h-[200px]',
+    medium: 'h-64',
+    large: 'h-80',
+    xlarge: 'h-[400px]',
+    auto: 'h-auto',
   }
 
   return (
@@ -56,28 +85,38 @@ export default function FeaturedGrid({data}: FeaturedGridProps) {
       )}
 
       {/* Feature Blocks Grid */}
-      <div className={cn('grid gap-8 mt-12', gridCols[columns as keyof typeof gridCols] || gridCols[3])}>
+      <div className={cn('grid mt-12', gridCols[columns as keyof typeof gridCols] || gridCols[3], gapClasses[gap as keyof typeof gapClasses] || gapClasses.medium)}>
         {blocks.map((block) => {
           // Text Overlay on Image
           if (layout === 'textOverlay') {
             return (
-              <div key={block._key} className="relative overflow-hidden rounded-lg group">
+              <div key={block._key} className="relative overflow-hidden group">
                 {block.image && (
                   <Image
                     src={urlFor(block.image).width(600).height(400).url()}
                     alt={block.image.altText || block.image.asset?.altText || block.heading || ''}
                     width={600}
                     height={400}
-                    className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className={cn('w-full object-cover transition-transform duration-300 group-hover:scale-105', heightClasses[imageHeight as keyof typeof heightClasses] || heightClasses.medium)}
                     placeholder="blur"
                     blurDataURL={block.image.asset?.metadata?.lqip}
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 text-white">
-                  {block.heading && <h3 className="text-2xl font-bold mb-2">{block.heading}</h3>}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
+                  {block.heading && (
+                    <h3 
+                      className="text-2xl font-bold mb-2"
+                      style={{color: resolveColor(headingColorRef, headingCustomColor, appearance)}}
+                    >
+                      {block.heading}
+                    </h3>
+                  )}
                   {block.content && (
-                    <div className="prose prose-invert prose-sm">
-                      <PortableTextBlock value={block.content} />
+                    <div 
+                      className="prose prose-invert prose-sm"
+                      style={{color: resolveColor(contentColorRef, contentCustomColor, appearance)}}
+                    >
+                      <PortableTextBlock value={block.content} appearance={appearance} />
                     </div>
                   )}
                   {block.button && (
@@ -94,10 +133,20 @@ export default function FeaturedGrid({data}: FeaturedGridProps) {
           if (layout === 'textOnly') {
             return (
               <div key={block._key} className="text-center">
-                {block.heading && <h3 className="text-2xl font-bold mb-4">{block.heading}</h3>}
+                {block.heading && (
+                  <h3 
+                    className="text-2xl font-bold mb-4"
+                    style={{color: resolveColor(headingColorRef, headingCustomColor, appearance)}}
+                  >
+                    {block.heading}
+                  </h3>
+                )}
                 {block.content && (
-                  <div className="prose prose-lg mx-auto">
-                    <PortableTextBlock value={block.content} />
+                  <div 
+                    className="prose prose-lg mx-auto"
+                    style={{color: resolveColor(contentColorRef, contentCustomColor, appearance)}}
+                  >
+                    <PortableTextBlock value={block.content} appearance={appearance} />
                   </div>
                 )}
                 {block.button && (
@@ -119,7 +168,7 @@ export default function FeaturedGrid({data}: FeaturedGridProps) {
                     alt={block.image.altText || block.image.asset?.altText || block.heading || ''}
                     width={600}
                     height={400}
-                    className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
+                    className={cn('w-full object-cover transition-transform duration-300 hover:scale-105', heightClasses[imageHeight as keyof typeof heightClasses] || heightClasses.medium)}
                     placeholder="blur"
                     blurDataURL={block.image.asset?.metadata?.lqip}
                   />
@@ -138,16 +187,26 @@ export default function FeaturedGrid({data}: FeaturedGridProps) {
                     alt={block.image.altText || block.image.asset?.altText || block.heading || ''}
                     width={600}
                     height={400}
-                    className="w-full h-64 object-cover"
+                    className={cn('w-full object-cover', heightClasses[imageHeight as keyof typeof heightClasses] || heightClasses.medium)}
                     placeholder="blur"
                     blurDataURL={block.image.asset?.metadata?.lqip}
                   />
                 </div>
               )}
-              {block.heading && <h3 className="text-2xl font-bold mb-4">{block.heading}</h3>}
+              {block.heading && (
+                <h3 
+                  className="text-2xl font-bold mb-4"
+                  style={{color: resolveColor(headingColorRef, headingCustomColor, appearance)}}
+                >
+                  {block.heading}
+                </h3>
+              )}
               {block.content && (
-                <div className="prose prose-lg mx-auto">
-                  <PortableTextBlock value={block.content} />
+                <div 
+                  className="prose prose-lg mx-auto"
+                  style={{color: resolveColor(contentColorRef, contentCustomColor, appearance)}}
+                >
+                  <PortableTextBlock value={block.content} appearance={appearance} />
                 </div>
               )}
               {block.button && (

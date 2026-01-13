@@ -76,7 +76,7 @@ export default function Gallery({
       <div className="container mx-auto px-4">
         <SectionHeader
           content={content}
-          contentClassName="prose prose-lg max-w-3xl mx-auto mb-12 [&>*:first-child]:text-3xl [&>*:first-child]:font-bold md:[&>*:first-child]:text-4xl"
+          contentClassName="prose prose-lg max-w-3xl"
           align={textAlign}
         />
 

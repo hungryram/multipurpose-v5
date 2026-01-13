@@ -17,7 +17,6 @@ export const colorReferenceField = {
       {title: 'Custom Color', value: 'custom'},
     ],
   },
-  initialValue: 'primary',
 }
 
 export const customColorField = {

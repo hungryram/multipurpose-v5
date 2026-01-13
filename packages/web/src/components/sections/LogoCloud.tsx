@@ -89,7 +89,6 @@ export default function LogoCloud({data}: LogoCloudProps) {
         <SectionHeader
           content={content}
           align={textAlign}
-          contentClassName="prose prose-lg mx-auto max-w-3xl [&>*:first-child]:text-2xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight md:[&>*:first-child]:text-3xl"
         />
       )}
 

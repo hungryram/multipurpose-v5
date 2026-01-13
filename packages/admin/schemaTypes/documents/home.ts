@@ -10,7 +10,6 @@ export default defineType({
       title: 'Page Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
-      initialValue: 'Home Page',
     },
     {
       name: 'slug',

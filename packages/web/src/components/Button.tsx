@@ -55,7 +55,15 @@ export default function Button({ data, appearance, variant = 'primary', classNam
         ? '/'
         : data.internalLink._type === 'blogIndex'
         ? '/blog'
-        : `/${data.internalLink._type}/${data.internalLink.slug}`
+        : data.internalLink._type === 'servicesIndex'
+        ? '/services'
+        : data.internalLink._type === 'page'
+        ? `/${data.internalLink.slug}`
+        : data.internalLink._type === 'post'
+        ? `/blog/${data.internalLink.slug}`
+        : data.internalLink._type === 'service'
+        ? `/services/${data.internalLink.slug}`
+        : `/${data.internalLink.slug}`
       : data.linkType === 'path' && data.internalPath
       ? data.internalPath
       : data.externalUrl || '#'
@@ -63,8 +71,8 @@ export default function Button({ data, appearance, variant = 'primary', classNam
   const baseClasses = 'inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2'
   
   const variantClasses = {
-    primary: 'bg-black text-white hover:bg-gray-800 focus:ring-black',
-    secondary: 'bg-white text-black border-2 border-black hover:bg-gray-100 focus:ring-black',
+    primary: 'text-white hover:bg-gray-800 focus:ring-black',
+    secondary: 'text-black border-2 border-black hover:bg-gray-100 focus:ring-black',
   }
 
   // Resolve colors from appearance or custom
@@ -74,11 +82,15 @@ export default function Button({ data, appearance, variant = 'primary', classNam
   const hoverBgColor = resolveColor(data.hoverBgColorRef, data.hoverBgCustomColor, appearance)
   const hoverTextColor = resolveColor(data.hoverTextColorRef, data.hoverTextCustomColor, appearance)
 
-  const hasCustomColors = bgColor || textColor || borderColor
+  // Use button-level colors, or fallback to appearance default button colors for primary variant
+  const finalBgColor = bgColor || (variant === 'primary' ? appearance?.mainColors?.buttonBackgroundColor?.hex : undefined)
+  const finalTextColor = textColor || (variant === 'primary' ? appearance?.mainColors?.buttonTextColor?.hex : undefined)
   
-  const customStyle = hasCustomColors ? {
-    backgroundColor: isHovered && hoverBgColor ? hoverBgColor : bgColor,
-    color: isHovered && hoverTextColor ? hoverTextColor : textColor,
+  const hasCustomColors = finalBgColor || finalTextColor || borderColor
+  
+  const customStyle: React.CSSProperties | undefined = hasCustomColors ? {
+    backgroundColor: isHovered && hoverBgColor ? hoverBgColor : finalBgColor,
+    color: isHovered && hoverTextColor ? hoverTextColor : finalTextColor,
     borderColor: borderColor,
     borderWidth: borderColor ? '2px' : undefined,
     borderStyle: borderColor ? 'solid' : undefined,

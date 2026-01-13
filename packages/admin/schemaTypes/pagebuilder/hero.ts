@@ -55,7 +55,7 @@ export default defineType({
     },
     {
       ...customColorField,
-      name: 'overlayCustomColor',
+      name: 'overlayColor',
       title: 'Custom Overlay Color',
       hidden: ({parent}: any) => parent?.overlayColorRef !== 'custom',
       group: 'settings',

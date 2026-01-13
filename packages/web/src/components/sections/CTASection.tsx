@@ -1,4 +1,3 @@
-import Button from '@/components/Button'
 import SectionHeader from '@/components/SectionHeader'
 import Image from 'next/image'
 import {urlFor} from '@/lib/sanity/image'
@@ -9,6 +8,11 @@ interface CtaSectionProps {
     content?: any[]
     layout?: 'centered' | 'banner' | 'split' | 'card'
     image?: any
+    imageSize?: string
+    imageSizeCustom?: number
+    imageFit?: 'cover' | 'contain' | 'fill'
+    imageHeight?: string
+    imageHeightCustom?: string
     primaryButton?: any
     secondaryButton?: any
     backgroundColor?: {hex: string}
@@ -23,7 +27,12 @@ export default function CtaSection({ data }: CtaSectionProps) {
   const { 
     content, 
     layout = 'centered', 
-    image, 
+    image,
+    imageSize = '50',
+    imageSizeCustom,
+    imageFit = 'cover',
+    imageHeight = '500',
+    imageHeightCustom,
     primaryButton, 
     secondaryButton, 
     backgroundColor, 
@@ -41,6 +50,25 @@ export default function CtaSection({ data }: CtaSectionProps) {
     xlarge: 'gap-16 md:gap-24'
   }
 
+  // Calculate image width percentage
+  const getImageWidth = () => {
+    if (imageSize === 'custom' && imageSizeCustom) {
+      return imageSizeCustom
+    }
+    return parseInt(imageSize) || 50
+  }
+
+  const imageWidth = getImageWidth()
+  const textWidth = 100 - imageWidth
+
+  // Calculate image height
+  const getImageHeight = () => {
+    if (imageHeight === 'custom' && imageHeightCustom) {
+      return imageHeightCustom
+    }
+    return `${imageHeight}px`
+  }
+
   // Banner layout - minimal height, horizontal buttons
   if (layout === 'banner') {
     return (
@@ -50,7 +78,7 @@ export default function CtaSection({ data }: CtaSectionProps) {
             content={content}
             primaryButton={primaryButton}
             secondaryButton={secondaryButton}
-            contentClassName="prose prose-lg [&>*:first-child]:text-2xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight md:[&>*:first-child]:text-3xl [&>*:first-child]:mb-2"
+            contentClassName="prose prose-lg"
             buttonsClassName="mt-4 flex flex-wrap gap-4 shrink-0"
             align={textAlign}
           />
@@ -67,24 +95,35 @@ export default function CtaSection({ data }: CtaSectionProps) {
         gapClasses[spacing],
         reverseColumn && "md:flex-row-reverse"
       )}>
-        <div className="flex-1">
+        <div 
+          className="w-full"
+          style={{ flexBasis: textWidth ? `${textWidth}%` : '50%' }}
+        >
           <SectionHeader
             content={content}
             primaryButton={primaryButton}
             secondaryButton={secondaryButton}
-            contentClassName="prose prose-lg max-w-none [&>*:first-child]:text-3xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight md:[&>*:first-child]:text-4xl lg:[&>*:first-child]:text-5xl"
+            contentClassName="prose prose-lg max-w-none"
             buttonsClassName="mt-8 flex flex-wrap gap-4"
             align={textAlign}
           />
         </div>
         {image && (
-          <div className="flex-1 w-full">
+          <div 
+            className="w-full relative overflow-hidden rounded-lg min-h-100 md:min-h-0"
+            style={{ 
+              flexBasis: imageWidth ? `${imageWidth}%` : '50%',
+              height: getImageHeight(),
+            }}
+          >
             <Image
-              src={urlFor(image).width(800).height(600).url()}
+              src={urlFor(image).width(1200).url()}
               alt={image.altText || image.asset?.altText || ''}
-              width={800}
-              height={600}
-              className="rounded-lg w-full"
+              fill
+              className={cn(
+                "rounded-lg",
+                imageFit === 'cover' ? "object-cover" : "object-contain"
+              )}
               placeholder="blur"
               blurDataURL={image.asset?.metadata?.lqip}
             />
@@ -108,7 +147,7 @@ export default function CtaSection({ data }: CtaSectionProps) {
           content={content}
           primaryButton={primaryButton}
           secondaryButton={secondaryButton}
-          contentClassName="prose prose-lg mx-auto [&>*:first-child]:text-3xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight sm:[&>*:first-child]:text-4xl md:[&>*:first-child]:text-5xl"
+          contentClassName="prose prose-lg mx-auto"
           align={textAlign}
         />
       </div>
@@ -122,7 +161,7 @@ export default function CtaSection({ data }: CtaSectionProps) {
         content={content}
         primaryButton={primaryButton}
         secondaryButton={secondaryButton}
-        contentClassName="prose prose-lg mx-auto [&>*:first-child]:text-3xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight sm:[&>*:first-child]:text-4xl md:[&>*:first-child]:text-5xl"
+        contentClassName="prose prose-lg mx-auto"
         align={textAlign}
       />
     </div>

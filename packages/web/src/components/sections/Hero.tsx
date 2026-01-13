@@ -44,13 +44,14 @@ export default function Hero({ data }: HeroProps) {
         <>
           <div className="absolute inset-0">
             <Image
-              src={urlFor(image).width(1920).height(1080).url()}
+              src={urlFor(image).width(2560).url()}
               alt={image.altText || image.asset?.altText || ''}
               fill
               className="object-cover"
               priority
               placeholder="blur"
               blurDataURL={image.asset?.metadata?.lqip}
+              sizes="100vw"
             />
           </div>
           <div 
@@ -60,12 +61,12 @@ export default function Hero({ data }: HeroProps) {
         </>
       )}
 
-      <div className={cn('container relative z-10 px-4 flex flex-col', alignClasses[textAlign])}>
+      <div className={cn('w-full max-w-7xl mx-auto relative z-10 px-4 flex flex-col', alignClasses[textAlign])}>
         <SectionHeader
           content={content}
           primaryButton={primaryButton}
           secondaryButton={secondaryButton}
-          contentClassName="prose prose-lg prose-invert max-w-4xl [&>*:first-child]:text-4xl [&>*:first-child]:font-bold [&>*:first-child]:tracking-tight sm:[&>*:first-child]:text-5xl md:[&>*:first-child]:text-6xl lg:[&>*:first-child]:text-7xl"
+          contentClassName="prose prose-lg prose-invert max-w-4xl"
           buttonsClassName="mt-10 flex flex-wrap gap-4"
           align={textAlign}
         />

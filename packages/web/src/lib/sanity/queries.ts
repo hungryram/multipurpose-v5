@@ -146,6 +146,11 @@ export const pageBuilderFields = groq`
     textAlign,
     reverseColumn,
     spacing,
+    imageSize,
+    imageSizeCustom,
+    imageFit,
+    imageHeight,
+    imageHeightCustom,
     image { ${imageFields} },
     primaryButton { ${buttonFields} },
     secondaryButton { ${buttonFields} },
@@ -157,6 +162,12 @@ export const pageBuilderFields = groq`
     content[]{ ${portableTextFields} },
     layout,
     textAlign,
+    gap,
+    imageHeight,
+    headingColorRef,
+    headingCustomColor { hex },
+    contentColorRef,
+    contentCustomColor { hex },
     primaryButton { ${buttonFields} },
     secondaryButton { ${buttonFields} },
     blocks[] {
@@ -337,6 +348,7 @@ export const appearanceQuery = groq`
       navColor,
       headerColor,
       navScrollColor,
+      announcementBar[]{ ${portableTextFields} },
       headerColorScroll,
       mainNav-> {
         title,
@@ -352,8 +364,10 @@ export const appearanceQuery = groq`
     },
     footer {
       footerText[]{ ${portableTextFields} },
+      disclaimer[]{ ${portableTextFields} },
       footerBackgroundColor,
-      textColor
+      textColor,
+      headingColor
     }
   }
 `
